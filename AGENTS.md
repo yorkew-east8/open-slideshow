@@ -67,14 +67,14 @@
 
 ## 5. 任务命令（Taskfile）
 
-| 命令              | 作用                                 |
-| ----------------- | ------------------------------------ |
-| `task build`      | 构建首页产物 + 安装依赖（Docker 内） |
-| `task lint`       | ESLint + Prettier check              |
-| `task test`       | 单测（vitest）+ e2e（playwright）    |
-| `task playground` | 本地起容器（首页 8080 + 播放 3030）  |
+> 设计：build/lint/test/playground 全部在 Docker 内执行，宿主机**无需安装依赖**。lint/test 与首页构建同处 `build` stage（实测合计 <3s，相对构建 ~48s 可忽略），随依赖/源码变更自动重跑，无需独立 verify stage。
 
-> 本地无 Docker 也可直接 `pnpm install && pnpm --filter home dev` 开发首页。
+| 命令                  | 作用                                                |
+| --------------------- | --------------------------------------------------- |
+| `task build`          | 构建镜像（lint/test 门禁内置，失败即报错）          |
+| `task playground:up`  | 构建 + 启动容器（首页 8080 + 播放 3030）            |
+| `task playground:down`| 停止容器                                            |
+| `task e2e`            | playwright e2e（Docker 内，需先 playground:up-detached） |
 
 ## 6. 写幻灯片
 

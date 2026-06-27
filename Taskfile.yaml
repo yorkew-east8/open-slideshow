@@ -5,58 +5,37 @@ vars:
   COMPOSE: docker compose
 
 tasks:
-  # 本地依赖安装（非 docker 开发时）
-  install:
-    desc: 安装本地依赖（pnpm）
-    cmds:
-      - pnpm install
-
-  # 构建 docker 镜像
+  # 构建：lint/test 已内置进 build stage，随构建自动重跑
   build:
-    desc: 构建 open-slideshow 镜像
+    desc: 构建镜像（含 lint/test 质量门禁，Docker 内）
     cmds:
-      - '{{.COMPOSE}} build'
+      - docker build -t {{.IMAGE}} .
 
-  # lint + format check
-  lint:
-    desc: ESLint + Prettier 检查
-    cmds:
-      - pnpm install --frozen-lockfile --ignore-scripts || pnpm install --ignore-scripts
-      - pnpm lint
-      - pnpm format
-
-  # 单测
-  test:
-    desc: 运行单元测试（vitest）
-    cmds:
-      - pnpm install --frozen-lockfile --ignore-scripts || pnpm install --ignore-scripts
-      - pnpm test
-
-  # 启动 playground（docker）
-  playground:
-    desc: 启动 playground 容器（首页 :8080，播放 :3030）
+  # 启动 playground
+  playground:up:
+    desc: 构建并启动容器（首页 :8080，播放 :3030）
     cmds:
       - '{{.COMPOSE}} up --build'
 
-  playground-detached:
+  playground:up-detached:
     desc: 后台启动 playground
     cmds:
       - '{{.COMPOSE}} up -d --build'
 
-  stop:
-    desc: 停止 playground
+  playground:down:
+    desc: 停止 playground 容器
     cmds:
       - '{{.COMPOSE}} down'
 
   logs:
-    desc: 查看日志
+    desc: 查看 playground 日志
     cmds:
       - '{{.COMPOSE}} logs -f'
 
-  # e2e: 用 playwright 镜像跑（步骤6）
+  # e2e：用 playwright 镜像跑（需先 playground:up-detached）
   e2e:
-    desc: 用 playwright 镜像跑 e2e 测试（需先 playground-detached）
-    deps: [playground-detached]
+    desc: 用 playwright 镜像跑 e2e 测试（需先 playground:up-detached）
+    deps: [playground:up-detached]
     cmds:
       - docker build -t os-e2e:latest tests/e2e
       - >
