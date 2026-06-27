@@ -51,6 +51,24 @@ Place `.md` files in the `user-slides/` directory (auto-listed) or upload them v
 
 Writing guidelines: see `user-slides/AGENTS.md`. Example: see `user-slides/welcome.md`.
 
+### Recommended: write slides with a Coding Agent
+
+The repo ships a slide-writing skill at [`skills/write-slides/SKILL.md`](./skills/write-slides/SKILL.md). It provides Coding Agents with the steps for writing slides and the guidelines for what makes a good deck. Feel free to tweak it to your own taste.
+
+For cross-tool compatibility, the repo provides two directory-level symlinks pointing at `skills/` (relative paths, ready after clone):
+- `.claude/skills/` ← read by Claude Code
+- `.agents/skills/` ← read by Codex (OpenCode reads both `.claude/` and `.agents/`)
+
+To start, just tell the Agent in the repo root, for example:
+
+```text
+Help me write a slide deck about "X", for an audience of Y, with the goal of Z. Outline: ...; around n pages.
+```
+
+The Agent will: ① read `user-slides/AGENTS.md` for the writing rules → ② align the audience and page-by-page outline with you → ③ fill in the content → ④ land the `.md` file. Once done, pick the file on the home page and present.
+
+> You can also write slides manually: just drop a `.md` that follows the rules above into `user-slides/`.
+
 ## Configuration (.env)
 
 | Key             | Default       | Description            |

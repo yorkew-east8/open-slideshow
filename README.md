@@ -51,6 +51,24 @@ pnpm --filter open-slideshow-server dev
 
 写片规范见 `user-slides/AGENTS.md`，示例见 `user-slides/welcome.md`。
 
+### 推荐：用 Coding Agent 来写幻灯片
+
+仓库内置了 [`skills/write-slides/SKILL.md`](./skills/write-slides/SKILL.md) 这个写片技能，为Coding Agent 提供了编写幻灯片的步骤，以及好的幻灯片的规范。可以根据自己的偏好调整。
+
+为兼容多个工具，仓库提供两个指向 `skills/` 的目录级软链（相对路径，克隆后即可用）：
+- `.claude/skills/` ← Claude Code 读取
+- `.agents/skills/` ← Codex 读取（OpenCode 同时读取 `.claude/` 与 `.agents/`）
+
+开始写片只需在仓库根目录对 Agent 说一句，例如：
+
+```text
+帮我写一份关于「X」的幻灯片，听众是 Y，目的是 Z。梗概是...，大约 n 页。
+```
+
+Agent 会依次：① 读 `user-slides/AGENTS.md` 了解写片规范 → ② 与你对齐听众与逐页大纲 → ③ 填充内容 → ④ 落地到 .md文件。完成后在首页选中该文件即可播放。
+
+> 也可手动写片：直接把符合上述规范的 `.md` 放进 `user-slides/` 即可。
+
 ## 配置（.env）
 
 | Key             | 默认          | 说明         |
