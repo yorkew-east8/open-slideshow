@@ -43,9 +43,15 @@ export function createFileApi(): Router {
     } catch {
       return res.status(404).json({ error: 'file not found' });
     }
-    const out = injectTheme(raw, theme || config.defaultTheme);
+    // 安全：theme 来自不可信请求体，会被拼入 YAML frontmatter。
+    // 必须用已安装主题白名单校验，非法值回退默认主题，防止注入任意 YAML 键（CWE-74）。
+    const safeTheme =
+      typeof theme === 'string' && config.installedThemes.includes(theme)
+        ? theme
+        : config.defaultTheme;
+    const out = injectTheme(raw, safeTheme);
     await writeFile(join(config.slidesDir, config.activeFile), out, 'utf8');
-    res.json({ ok: true, theme: theme || config.defaultTheme });
+    res.json({ ok: true, theme: safeTheme });
   });
 
   // 已安装主题
@@ -77,7 +83,8 @@ function sanitize(name: string): string | null {
 }
 
 // 把 theme 注入 frontmatter（首页风格选择覆盖文件内值，对齐 use-cases UC-5）
-function injectTheme(raw: string, theme: string): string {
+// 注意：调用方必须先用白名单校验 theme，本函数不做转义，仅做受控字符串拼接。
+export function injectTheme(raw: string, theme: string): string {
   if (raw.startsWith('---')) {
     // 已有 frontmatter：替换或追加 theme:
     const end = raw.indexOf('\n---', 3);
