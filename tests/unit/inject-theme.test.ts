@@ -9,8 +9,10 @@ describe('injectTheme', () => {
 
   it('已有 frontmatter 但无 theme 时追加 theme 行', () => {
     const raw = `---\ntitle: 演示\n---\n\n# 标题`;
+    // injectTheme 走 else 分支：head.trimEnd() + '\ntheme: seriph\n'，
+    // 再拼回以 '\n---' 开头的 body，故 theme 行与结束 --- 间有两个换行。
     expect(injectTheme(raw, 'seriph')).toBe(
-      `---\ntitle: 演示\ntheme: seriph\n---\n\n# 标题`,
+      `---\ntitle: 演示\ntheme: seriph\n\n---\n\n# 标题`,
     );
   });
 
