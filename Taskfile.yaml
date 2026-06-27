@@ -1,0 +1,65 @@
+version: '3'
+
+vars:
+  IMAGE: open-slideshow:latest
+  COMPOSE: docker compose
+
+tasks:
+  # 本地依赖安装（非 docker 开发时）
+  install:
+    desc: 安装本地依赖（pnpm）
+    cmds:
+      - pnpm install
+
+  # 构建 docker 镜像
+  build:
+    desc: 构建 open-slideshow 镜像
+    cmds:
+      - '{{.COMPOSE}} build'
+
+  # lint + format check
+  lint:
+    desc: ESLint + Prettier 检查
+    cmds:
+      - pnpm install --frozen-lockfile --ignore-scripts || pnpm install --ignore-scripts
+      - pnpm lint
+      - pnpm format
+
+  # 单测
+  test:
+    desc: 运行单元测试（vitest）
+    cmds:
+      - pnpm install --frozen-lockfile --ignore-scripts || pnpm install --ignore-scripts
+      - pnpm test
+
+  # 启动 playground（docker）
+  playground:
+    desc: 启动 playground 容器（首页 :8080，播放 :3030）
+    cmds:
+      - '{{.COMPOSE}} up --build'
+
+  playground-detached:
+    desc: 后台启动 playground
+    cmds:
+      - '{{.COMPOSE}} up -d --build'
+
+  stop:
+    desc: 停止 playground
+    cmds:
+      - '{{.COMPOSE}} down'
+
+  logs:
+    desc: 查看日志
+    cmds:
+      - '{{.COMPOSE}} logs -f'
+
+  # e2e: 用 playwright 镜像跑（步骤6）
+  e2e:
+    desc: 用 playwright 镜像跑 e2e 测试（需先 playground-detached）
+    deps: [playground-detached]
+    cmds:
+      - docker build -t os-e2e:latest tests/e2e
+      - >
+        docker run --rm -e TARGET_HOST=host.docker.internal
+        --entrypoint sh os-e2e:latest
+        -c "npx playwright test --reporter=list"

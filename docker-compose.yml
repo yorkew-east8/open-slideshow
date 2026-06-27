@@ -1,0 +1,18 @@
+services:
+  open-slideshow:
+    build: .
+    image: open-slideshow:latest
+    container_name: open-slideshow
+    ports:
+      - '8080:8080'
+      - '3030:3030'
+    volumes:
+      # 幻灯片库挂载卷，便于在宿主机直接编辑 md
+      - ./user-slides:/app/user-slides
+    environment:
+      - SLIDES_DIR=/app/user-slides
+      - HOME_PORT=8080
+      - SLIDEV_PORT=3030
+      - DEFAULT_THEME=default
+      - HISTORY_LIMIT=20
+    restart: unless-stopped

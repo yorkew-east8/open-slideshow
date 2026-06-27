@@ -1,0 +1,48 @@
+# --- 依赖 ---
+node_modules/
+**/node_modules/
+.pnpm-store/
+
+# --- 构建产物 ---
+dist/
+**/dist/
+*.tsbuildinfo
+.vite/
+
+# --- 运行时生成的幻灯片入口（由 activate/seed 写入） ---
+user-slides/active.md
+apps/player/active.md
+
+# --- 配置（含敏感本地覆盖） ---
+.env
+.env.*
+!.env.example
+
+# --- 测试产物 ---
+.vitest/
+coverage/
+**/coverage/
+# playwright
+test-results/
+playwright-report/
+blob-report/
+**/test-results/
+**/playwright-report/
+**/blob-report/
+
+# --- 日志 ---
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- 编辑器 / IDE ---
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# --- 操作系统 ---
+.DS_Store
+Thumbs.db
