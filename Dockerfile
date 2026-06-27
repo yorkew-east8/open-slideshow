@@ -10,10 +10,11 @@
 #      无需独立 verify stage，避免多余镜像与配置
 
 ########## deps + build ##########
-FROM node:22-alpine AS build
+# 固定到具体 patch 版本，避免 :latest 每次重新 pull
+FROM node:22.23.1-alpine AS build
 WORKDIR /app
-# alpine 需要 git 用于部分依赖；python3/make/g++ 用于原生模块（Slidev/esbuild 等）
-RUN apk add --no-cache git python3 make g++ && corepack enable && corepack prepare pnpm@9.12.0 --activate
+# pnpm via corepack（依赖均为预编译二进制 + npm tarball，无需 git/原生编译工具链）
+RUN corepack enable && corepack prepare pnpm@9.12.0 --activate
 
 # 先装依赖（仅依赖 package.json/lockfile，代码变更此层命中缓存）
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
@@ -35,9 +36,9 @@ RUN pnpm --filter home build
 RUN pnpm lint && pnpm format && pnpm test
 
 ########## runtime ##########
-FROM node:22-alpine AS runtime
+FROM node:22.23.1-alpine AS runtime
 WORKDIR /app
-RUN apk add --no-cache git && corepack enable && corepack prepare pnpm@9.12.0 --activate
+RUN corepack enable && corepack prepare pnpm@9.12.0 --activate
 
 # 复制运行所需：首页产物 + player（含 slidev）+ server（含 tsx）
 COPY --from=build /app/node_modules ./node_modules
@@ -49,12 +50,12 @@ COPY apps/player ./apps/player
 COPY server ./server
 COPY apps/home/package.json ./apps/home/package.json
 
-# 默认幻灯片库（可被卷覆盖）
-COPY user-slides ./user-slides
+# 默认幻灯片库（可被卷覆盖；compose 把宿主机 SLIDES_DIR 挂到 /app/slides）
+COPY user-slides /app/slides
 
 ENV HOME_PORT=8080 \
     SLIDEV_PORT=3030 \
-    SLIDES_DIR=/app/user-slides \
+    SLIDES_DIR=/app/slides \
     DEFAULT_THEME=default \
     HISTORY_LIMIT=20
 
