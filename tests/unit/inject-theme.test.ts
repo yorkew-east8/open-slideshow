@@ -18,9 +18,7 @@ describe('injectTheme', () => {
 
   it('无 frontmatter 时补一个', () => {
     const raw = `# 标题\n\n内容`;
-    expect(injectTheme(raw, 'default')).toBe(
-      `---\ntheme: default\n---\n# 标题\n\n内容`,
-    );
+    expect(injectTheme(raw, 'default')).toBe(`---\ntheme: default\n---\n# 标题\n\n内容`);
   });
 
   it('即便 theme 含换行等特殊字符，也只是被原样写入字符串（注入由调用方白名单兜底）', () => {
