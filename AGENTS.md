@@ -78,7 +78,8 @@
 
 ## 6. 写幻灯片
 
-见 `user-slides/AGENTS.md`。
+- 语法与目录规范：见 `user-slides/AGENTS.md`。
+- 编写**新**幻灯片的完整流程（先对齐听众与大纲 → 再填内容 → 落地文件）：见仓库内 skill `skills/write-slides/SKILL.md`，Agent 接到「写一份新幻灯片」类请求时应遵循该流程。
 
 ## 7. Review 自检清单（每次改动后过一遍）
 

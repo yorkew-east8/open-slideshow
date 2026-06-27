@@ -1,18 +1,24 @@
+# 幻灯片库目录（宿主机路径，相对仓库根或绝对路径）
+# 由 .env 提供，compose 自动读取并挂载到容器内固定路径 /app/slides
+#   - ./.env:SLIDES_DIR         宿主机上的目录
+#   - /app/slides               容器内统一路径（服务实际读取）
+# 这样一份 .env 同时适用于「本地直跑」和「Docker 跑」。
 services:
   open-slideshow:
     build: .
     image: open-slideshow:latest
     container_name: open-slideshow
     ports:
-      - '8080:8080'
-      - '3030:3030'
+      - '${HOME_PORT:-8080}:8080'
+      - '${SLIDEV_PORT:-3030}:3030'
     volumes:
-      # 幻灯片库挂载卷，便于在宿主机直接编辑 md
-      - ./user-slides:/app/user-slides
+      # 把宿主机的 SLIDES_DIR 挂进容器内的固定路径
+      - ${SLIDES_DIR:-./user-slides}:/app/slides
     environment:
-      - SLIDES_DIR=/app/user-slides
+      # 容器内服务读到的固定路径（与 docker-compose.yml 内挂载目标一致）
+      - SLIDES_DIR=/app/slides
       - HOME_PORT=8080
       - SLIDEV_PORT=3030
-      - DEFAULT_THEME=default
-      - HISTORY_LIMIT=20
+      - DEFAULT_THEME=${DEFAULT_THEME:-default}
+      - HISTORY_LIMIT=${HISTORY_LIMIT:-20}
     restart: unless-stopped
