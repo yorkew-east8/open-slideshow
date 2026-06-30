@@ -26,12 +26,15 @@ export const config = {
   homePort: Number(process.env.HOME_PORT || 8080),
   slidevPort: Number(process.env.SLIDEV_PORT || 3030),
   defaultTheme: process.env.DEFAULT_THEME || 'default',
+  // 默认配色：light / dark（默认浅色，不随系统）
+  colorSchemas: ['light', 'dark'] as const,
+  defaultColorSchema: 'light',
   historyLimit: Number(process.env.HISTORY_LIMIT || 20),
   // 播放器实际加载的入口文件（固定名，内容动态写入）。
   // 放在 player 目录内，使 Slidev 的 userRoot = apps/player，从而加载同目录的 vite.config.ts。
   activeFile: '../apps/player/active.md',
   // 已安装主题白名单（与 apps/player/package.json 对齐）
-  installedThemes: ['default', 'seriph'],
+  installedThemes: ['default', 'seriph', 'apple-basic', 'bricks', 'shibainu'],
 } as const;
 
 export type Config = typeof config;

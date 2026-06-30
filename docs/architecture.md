@@ -18,7 +18,7 @@
 | 镜像/端口模型    | **方案 A：单镜像、双端口**，一个 Node 进程同时托管首页(8080) 与 Slidev(3030)   | 满足“一个镜像”，进程内多 server 是 Docker 常见做法；不引入 iframe 跨源风险 |
 | 文件选择         | **方案 i：首页列服务端 `user-slides/` 目录 + 上传落地**                        | 浏览器沙箱无法读任意本地路径；落到可配置目录后可持久化、可缓存历史         |
 | 幻灯片合法性校验 | 含至少一个 `---` 分页符，或 frontmatter 含 `theme`/`layout`                    | Slidev 无严格“合法性”定义，采用轻量启发式，并允许用户强制打开              |
-| 预装主题         | `default` + `seriph`                                                           | 满足“至少 1 种 + 可扩展”，控制镜像体积                                     |
+| 预装主题         | `default` / `seriph` / `apple-basic` / `bricks` / `shibainu`                   | 官方主题全覆盖（@slidev/theme-*），满足“至少 1 种 + 可扩展”，控制镜像体积 |
 | 配置             | `.env`：`SLIDES_DIR / HOME_PORT / SLIDEV_PORT / DEFAULT_THEME / HISTORY_LIMIT` | 单一配置入口                                                               |
 | 返回首页方式     | 幻灯片新标签播放，关闭标签即回首页                                             | 玩家保持官方纯净，不注入自定义按钮                                         |
 
@@ -132,9 +132,9 @@ type HistoryItem = {
 
 ### 5.3 风格选择
 
-- 首页右侧下拉列出**已安装**的主题（`default`、`seriph`，及未来扩展）。
-- 选定后，`POST /api/activate` 时一并把 `theme` 写入 `active.md` 的 frontmatter（或注入到 Slidev 选项）。
-- 扩展：在 `apps/player/package.json` 增依赖即可，首页通过 `GET /api/themes` 动态读取。
+- 首页右侧下拉列出**已安装**的主题（`default` / `seriph` / `apple-basic` / `bricks` / `shibainu`，及未来扩展），并提供「浅色 / 深色」配色开关（默认浅色，不随系统）。
+- 选定后，`POST /api/activate` 时一并把 `theme` 与 `colorSchema` 写入 `active.md` 的 frontmatter。
+- 扩展：在 `apps/player/package.json` 增依赖 + `server/config.ts` 同步 `installedThemes` 即可，首页通过 `GET /api/themes` 动态读取。
 
 ## 6. 扩展点（随官方升级友好）
 

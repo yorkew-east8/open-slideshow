@@ -16,6 +16,8 @@ const files = ref<string[]>([]);
 const selected = ref<string | null>(null);
 const themes = ref<string[]>(['default']);
 const theme = ref('default');
+// 配色：浅色 / 深色（默认浅色，不随系统）
+const colorSchema = ref('light');
 const loading = ref(false);
 const msg = ref<string | null>(null);
 const busy = ref(false);
@@ -66,7 +68,7 @@ async function startPlay() {
   busy.value = true;
   msg.value = '准备播放…';
   try {
-    await activate(selected.value, theme.value);
+    await activate(selected.value, theme.value, colorSchema.value);
     history.value = recordOpen(selected.value, historyLimit.value);
     // 新标签打开播放器
     const url = `${location.protocol}//${location.hostname}:${slidevPort.value}`;
@@ -126,7 +128,11 @@ async function quickAdd(filename: string) {
           <div class="card-label">当前选中</div>
           <div class="card-name">{{ selected || '（未选择）' }}</div>
         </div>
-        <ThemeSelector v-model="theme" :themes="themes" />
+        <ThemeSelector
+          v-model="theme"
+          v-model:colorSchema="colorSchema"
+          :themes="themes"
+        />
         <div v-if="msg" class="msg">{{ msg }}</div>
       </section>
     </main>

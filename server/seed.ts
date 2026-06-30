@@ -17,7 +17,8 @@ export async function ensureActiveSeed(): Promise<void> {
     (n) => n.endsWith('.md') && n !== config.activeFile,
   );
   const seed = names.find((n) => n === 'welcome.md') || names.sort()[0] || null;
-  let content = '---\ntheme: default\n---\n\n# Open Slideshow\n\n等待选择幻灯片…\n';
+  let content =
+    '---\ntheme: default\ncolorSchema: light\n---\n\n# Open Slideshow\n\n等待选择幻灯片…\n';
   if (seed) {
     content = await readFile(join(config.slidesDir, seed), 'utf8');
   }
