@@ -21,11 +21,15 @@ export async function uploadFile(filename: string, content: string): Promise<voi
   }
 }
 
-export async function activate(filename: string, theme: string): Promise<void> {
+export async function activate(
+  filename: string,
+  theme: string,
+  colorSchema: string,
+): Promise<void> {
   const r = await fetch(`${base}/api/activate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ filename, theme }),
+    body: JSON.stringify({ filename, theme, colorSchema }),
   });
   if (!r.ok) {
     const e = await r.json().catch(() => ({}));

@@ -81,7 +81,7 @@ Agent 会依次：① 读 `user-slides/AGENTS.md` 了解写片规范 → ② 与
 
 ## 风格扩展
 
-预装 `default` + `seriph`。新增主题：在 `apps/player/package.json` 加依赖后重新 `task build`，首页风格列表会自动暴露。
+预装 5 个官方主题：`default` / `seriph` / `apple-basic` / `bricks` / `shibainu`；并可在首页切换「浅色 / 深色」配色（默认浅色）。新增主题：在 `apps/player/package.json` 加依赖、并在 `server/config.ts` 的 `installedThemes` 同步后重新 `task build`，首页风格列表会自动暴露。
 
 ## 命令（task）
 

@@ -10,8 +10,11 @@
   },
   "dependencies": {
     "@slidev/cli": "52.16.0",
+    "@slidev/theme-apple-basic": "0.25.1",
+    "@slidev/theme-bricks": "0.25.0",
     "@slidev/theme-default": "0.25.0",
     "@slidev/theme-seriph": "0.25.0",
+    "@slidev/theme-shibainu": "0.25.0",
     "vite": "8.1.0"
   }
 }
